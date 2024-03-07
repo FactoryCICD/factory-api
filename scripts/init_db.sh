@@ -45,7 +45,7 @@ done
 DATABASE_URL=postgres://${DB_USER}:${DB_PASSWORD}@localhost:${DB_PORT}/${DB_NAME}
 export DATABASE_URL
 
-# sqlx database create
-# sqlx migrate run
+# Run sql scripts within /sql directory
+psql -v ON_ERROR_STOP=1 -h "localhost" --username "$DB_USER" --dbname "$DB_NAME" -f ./scripts/sql/create_projects_table.sql
 
-# >&2 echo "Postgres has been migrated, ready to go!"
+>&2 echo "Postgres has been migrated, ready to go!"
