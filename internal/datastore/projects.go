@@ -30,7 +30,14 @@ func (d *projectDatastore) GetProjects() ([]types.Project, error) {
 }
 
 func (d *projectDatastore) GetProject(id string) (types.Project, error) {
-	return types.Project{}, nil
+	project := types.Project{}
+
+	err := d.DB.DB().QueryRow(context.TODO(), "SELECT id, url, webhook_secret FROM projects WHERE id = $1", id).Scan(&project.ID, &project.URL, &project.WebhookSecret)
+	if err != nil {
+		return types.Project{}, err
+	}
+
+	return project, nil
 }
 
 func (d *projectDatastore) CreateProject(project types.Project) (string, error) {

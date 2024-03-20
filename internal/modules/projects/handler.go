@@ -40,6 +40,22 @@ func (h *projectHandler) GetProjects(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *projectHandler) GetProject(w http.ResponseWriter, r *http.Request) {
+	// Get the project ID from the request
+	id := chi.URLParam(r, "id")
+	if id == "" {
+		http.Error(w, "ID is required", http.StatusBadRequest)
+		return
+	}
+
+	// Get the project
+	project, err := h.Controller.GetProject(id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Return the project
+	render.JSON(w, r, project)
 }
 
 func (h *projectHandler) CreateProject(w http.ResponseWriter, r *http.Request) {

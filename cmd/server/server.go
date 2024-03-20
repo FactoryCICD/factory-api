@@ -34,6 +34,7 @@ func Build(logger log.Logger, db *dbcontext.DB) *chi.Mux {
 
 	// Routes
 	r.Get("/", rootRoute)
+	r.Get("/health", healthCheck)
 
 	// Handlers
 	r.Route("/v1", func(r chi.Router) {
@@ -43,6 +44,14 @@ func Build(logger log.Logger, db *dbcontext.DB) *chi.Mux {
 	// Print routes
 	printEstablishedRoutes(r, logger)
 	return r
+}
+
+func healthCheck(w http.ResponseWriter, r *http.Request) {
+	// TODO: Return more information about the health of the service
+	message := struct {
+		Message string `json:"message"`
+	}{Message: "OK"}
+	render.JSON(w, r, message)
 }
 
 func rootRoute(w http.ResponseWriter, r *http.Request) {

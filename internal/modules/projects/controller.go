@@ -11,7 +11,7 @@ import (
 
 type ProjectController interface {
 	GetProjects(w http.ResponseWriter, r *http.Request)
-	GetProject(w http.ResponseWriter, r *http.Request)
+	GetProject(id string) (types.Project, error)
 	CreateProject(newProject types.CreateProject) (string, error)
 	UpdateProject(w http.ResponseWriter, r *http.Request)
 }
@@ -32,7 +32,17 @@ func NewController(ds datastore.ProjectDatastore, logger log.Logger) ProjectCont
 func (c *projectController) GetProjects(w http.ResponseWriter, r *http.Request) {
 }
 
-func (c *projectController) GetProject(w http.ResponseWriter, r *http.Request) {
+func (c *projectController) GetProject(id string) (types.Project, error) {
+	if id == "" {
+		return types.Project{}, errors.NewRequestError(nil, errors.BadRequestError, "ID is required", c.Logger)
+	}
+
+	project, err := c.Datastore.GetProject(id)
+	if err != nil {
+		return types.Project{}, errors.NewRequestError(err, errors.InternalServerError, "Error getting project", c.Logger)
+	}
+
+	return project, nil
 }
 
 func (c *projectController) CreateProject(newProject types.CreateProject) (string, error) {
