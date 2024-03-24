@@ -37,6 +37,13 @@ func Routes(controller ProjectController) *chi.Mux {
 }
 
 func (h *projectHandler) GetProjects(w http.ResponseWriter, r *http.Request) {
+	projects, err := h.Controller.GetProjects()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	render.JSON(w, r, projects)
 }
 
 func (h *projectHandler) GetProject(w http.ResponseWriter, r *http.Request) {

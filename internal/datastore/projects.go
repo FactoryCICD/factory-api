@@ -26,7 +26,24 @@ func NewDatastore(db *dbcontext.DB) ProjectDatastore {
 }
 
 func (d *projectDatastore) GetProjects() ([]types.Project, error) {
-	return nil, nil
+	projects := []types.Project{}
+
+	rows, err := d.DB.DB().Query(context.TODO(), "SELECT id, url, webhook_secret FROM projects")
+	if err != nil {
+		return nil, err
+	}
+
+	for rows.Next() {
+		project := types.Project{}
+		err := rows.Scan(&project.ID, &project.URL, &project.WebhookSecret)
+		if err != nil {
+			return nil, err
+		}
+
+		projects = append(projects, project)
+	}
+
+	return projects, nil
 }
 
 func (d *projectDatastore) GetProject(id string) (types.Project, error) {
