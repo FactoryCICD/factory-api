@@ -4,7 +4,8 @@ import (
 	"net/http"
 
 	"github.com/FactoryCICD/factory-api/internal/datastore"
-	"github.com/FactoryCICD/factory-api/internal/modules/projects"
+	"github.com/FactoryCICD/factory-api/internal/projects"
+	"github.com/FactoryCICD/factory-api/internal/webhooks"
 	dbcontext "github.com/FactoryCICD/factory-api/pkg/db"
 	"github.com/FactoryCICD/factory-api/pkg/log"
 	"github.com/go-chi/chi/v5"
@@ -39,6 +40,7 @@ func Build(logger log.Logger, db *dbcontext.DB) *chi.Mux {
 	// Handlers
 	r.Route("/v1", func(r chi.Router) {
 		r.Mount("/projects", projects.Routes(projects.NewController(datastore.NewDatastore(db), logger)))
+		r.Mount("/webhook", webhooks.Routes(webhooks.NewGithubWebHookHandler()))
 	})
 
 	// Print routes

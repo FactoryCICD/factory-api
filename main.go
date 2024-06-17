@@ -7,7 +7,7 @@ import (
 	"os"
 
 	"github.com/FactoryCICD/factory-api/cmd/server"
-	"github.com/FactoryCICD/factory-api/internal/config"
+	"github.com/FactoryCICD/factory-api/pkg/config"
 	dbcontext "github.com/FactoryCICD/factory-api/pkg/db"
 	"github.com/FactoryCICD/factory-api/pkg/log"
 	"github.com/jackc/pgx/v5"
@@ -36,5 +36,5 @@ func main() {
 	app := server.Build(logger, db)
 
 	logger.Info("Server is running on port ", config.EnvVars.GetPort())
-	http.ListenAndServe(fmt.Sprintf(":%s", config.EnvVars.GetPort()), app)
+	http.ListenAndServe(fmt.Sprintf("localhost:%s", config.EnvVars.GetPort()), app)
 }
